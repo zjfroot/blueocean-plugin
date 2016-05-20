@@ -1,4 +1,5 @@
 import Pipelines from './Pipelines';
+import Pipelines2 from './Pipelines2';
 import MultiBranch from './MultiBranch';
 import Activity from './Activity';
 import PullRequests from './PullRequests';
@@ -11,6 +12,7 @@ import RunDetailsTests from './RunDetailsTests';
 
 export {
     Pipelines,
+    Pipelines2,
     MultiBranch,
     Activity,
     PullRequests,
