@@ -19,6 +19,11 @@ export class ErrorResult {
 }
 
 export class ResultHelper {
+    static isValue(result) {
+        return !(result instanceof PendingResult) &&
+                !(result instanceof ErrorResult);
+    }
+
     static isPending(result) {
         return result instanceof PendingResult;
     }

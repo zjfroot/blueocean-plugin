@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import { Table } from '@jenkins-cd/design-language';
 
-const { bool, node, string } = PropTypes;
+const { array, bool, node, number, oneOfType, string } = PropTypes;
 
 /**
  * Used to wrap a number of descendent elements to make them
@@ -43,7 +42,7 @@ export class Label extends Component {
             // the size of 'tempText'  (or 8 chars if ommitted)
             const tempText = this.props.tempText || 'abcdefgh';
             text = new Array(tempText.length * 0.5).join(String.fromCharCode(9608));
-            styles.opacity = 0.75;
+            styles.opacity = 0.5;
         } else {
             delete styles.opacity;
         }
@@ -55,10 +54,76 @@ export class Label extends Component {
 }
 
 Label.propTypes = {
-    children: string,
+    children: oneOfType([number, string]),
     tempText: string,
 };
 
 Label.contextTypes = {
     pending: bool,
+};
+
+export class Table extends Component {
+
+    getKey(column) {
+        if (typeof column === 'string') {
+            return column;
+        }
+        return column.label;
+    }
+
+    getLabel(column) {
+        if (typeof column === 'string') {
+            return column;
+        }
+        return column.label;
+    }
+
+    getClass(column) {
+        if (typeof column === 'string') {
+            return null;
+        }
+        return column.className;
+    }
+
+    render() {
+        const { headers, children } = this.props;
+
+        return (
+            <table className={this.props.className}>
+            { headers &&
+                <thead>
+                    <tr>
+                    { headers.map((column) =>
+                        <th key={this.getKey(column)} className={this.getClass(column)}>
+                            {this.getLabel(column)}
+                        </th>)
+                    }
+                    </tr>
+                </thead>
+            }
+
+            { headers ? (
+                <tbody>{children}</tbody>
+            ) :
+                { children }
+            }
+            </table>
+        );
+    }
+}
+
+Table.propTypes = {
+    headers: array,
+    children: array,
+    className: string,
+};
+
+export const makeData = (prop, count = 5, length = 10) => {
+    const data = [];
+    for (let index = 0; index < count; index++) {
+        data.push({
+            [prop]: (Math.pow(10, length) + index),
+        });
+    }
+    return data;
 };
