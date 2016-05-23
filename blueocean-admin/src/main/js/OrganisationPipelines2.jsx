@@ -98,7 +98,7 @@ class OrganisationPipelines2 extends Component {
         if (this.context.config) {
             setTimeout(() => (
                 this.props.fetchPipelinesIfNeeded(this.context.config, this.props.params.flag)
-            ), 2000);
+            ), 5000);
         }
     }
 

@@ -2,29 +2,29 @@ import React, { Component, PropTypes } from 'react';
 import { PipelineRecord } from './records';
 import Table from './Table';
 import { ResultHelper } from '../Result';
+import { InterstitialContainer, Label } from './InterstitialContainer';
 
 import { Page, PageHeader, Title, Favorite, WeatherIcon } from '@jenkins-cd/design-language';
 import { ExtensionPoint } from '@jenkins-cd/js-extensions';
 
-const { array } = PropTypes;
+const { array, bool } = PropTypes;
 
 export default class Pipelines2 extends Component {
 
     render() {
         const { pipelines } = this.context;
 
-        if (ResultHelper.isPending(pipelines)) {
-            return <div>Loading...</div>;
-        } else if (ResultHelper.isError(pipelines)) {
+        if (ResultHelper.isError(pipelines)) {
             if (pipelines.statusCode === 404) {
                 return <div>Not Found!</div>
             }
             return <div>Error...</div>;
         }
 
-        const pipelineRecords = pipelines
-            .map(data => new PipelineRecord(data))
-            .sort(pipeline => !!pipeline.branchNames);
+        const pipelineRecords = !ResultHelper.isPending(pipelines) ?
+            pipelines.map(data => new PipelineRecord(data))
+            .sort(pipeline => !!pipeline.branchNames) :
+            [];
 
         return (
             <Page>
@@ -42,6 +42,10 @@ export default class Pipelines2 extends Component {
                 </PageHeader>
                 <main>
                     <article>
+                        <InterstitialContainer pending={ResultHelper.isPending(pipelines)}>
+                            <Label>hello</Label>
+                        </InterstitialContainer>
+
                         <ExtensionPoint name="jenkins.pipeline.list.top" />
                         <Table
                           className="multiBranch"
@@ -52,10 +56,6 @@ export default class Pipelines2 extends Component {
                                     <tr key={pipeline.name}>
                                         <td>{pipeline.name}</td>
                                         <td><WeatherIcon score={pipeline.weatherScore} /></td>
-                                        {
-                                            // fixme refactor the next 2 lines and the prior logic
-                                            // to create a react component out of it
-                                        }
                                         <td>-</td>
                                         <td>-</td>
                                         <td><Favorite /></td>
@@ -68,6 +68,8 @@ export default class Pipelines2 extends Component {
             </Page>);
     }
 }
+
+
 
 Pipelines2.contextTypes = {
     pipelines: array,
