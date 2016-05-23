@@ -32,6 +32,7 @@ InterstitialContainer.childContextTypes = {
  * Simple text label that supports a "pending state" when placed inside
  * InterstitialContainer.
  */
+// eslint-disable-next-line
 export class Label extends Component {
     render() {
         const styles = {};
@@ -62,6 +63,7 @@ Label.contextTypes = {
     pending: bool,
 };
 
+// eslint-disable-next-line
 export class Table extends Component {
 
     getKey(column) {

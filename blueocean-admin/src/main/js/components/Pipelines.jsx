@@ -13,8 +13,6 @@ export default class Pipelines extends Component {
     render() {
         const { pipelines } = this.context;
 
-        console.log('Pipelines got pipelines=', pipelines);
-
         // Early out
         if (!pipelines) {
             return <div>No pipelines found.</div>;

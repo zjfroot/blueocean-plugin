@@ -20,7 +20,7 @@ function parseJSON(response) {
 }
 
 const actions = {
-    clearPipelinesData: () => ({type: ACTION_TYPES.CLEAR_PIPELINES_DATA2}),
+    clearPipelinesData: () => ({ type: ACTION_TYPES.CLEAR_PIPELINES_DATA2 }),
 
     fetchPipelinesIfNeeded(config, flag) {
         return (dispatch, getState) => {
@@ -57,15 +57,15 @@ const actions = {
                     ...optional,
                     payload: result,
                     type: actionType,
-                })
+                });
             });
     },
 };
 
 const testStore = state => state.testStore;
-const location = (state) => state.location;
-export const previous = createSelector([location], store => store.previous);
-export const current = createSelector([location], store => store.current);
+const locationState = (state) => state.location;
+export const previous = createSelector([locationState], store => store.previous);
+export const current = createSelector([locationState], store => store.current);
 export const pipelinesSelector = createSelector([testStore], store => store.pipelines);
 
 

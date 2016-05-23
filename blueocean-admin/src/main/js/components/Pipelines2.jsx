@@ -2,8 +2,10 @@ import React, { Component, PropTypes } from 'react';
 import { PipelineRecord } from './records';
 import { ResultHelper } from '../Result';
 import { InterstitialContainer, Label, Table, makeData } from './InterstitialContainer';
-
-import { EmptyStateView, Favorite, Page, PageHeader, Title, WeatherIcon } from '@jenkins-cd/design-language';
+import {
+    EmptyStateView, Favorite, Page, PageHeader, Title, WeatherIcon,
+}
+    from '@jenkins-cd/design-language';
 import { ExtensionPoint } from '@jenkins-cd/js-extensions';
 
 const { array } = PropTypes;
