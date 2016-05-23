@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import PipelineRowItem from './PipelineRowItem';
 import { PipelineRecord } from './records';
 import Table from './Table';
+import { ResultHelper } from '../Result';
 
 import { Page, PageHeader, Title, Favorite, WeatherIcon } from '@jenkins-cd/design-language';
 import { ExtensionPoint } from '@jenkins-cd/js-extensions';
@@ -13,12 +13,13 @@ export default class Pipelines2 extends Component {
     render() {
         const { pipelines } = this.context;
 
-        console.log('Pipeline2 got pipelines=', pipelines);
-        debugger;
-
-        // Early out
-        if (!pipelines) {
-            return <div>No pipelines found.</div>;
+        if (ResultHelper.isPending(pipelines)) {
+            return <div>Loading...</div>;
+        } else if (ResultHelper.isError(pipelines)) {
+            if (pipelines.statusCode === 404) {
+                return <div>Not Found!</div>
+            }
+            return <div>Error...</div>;
         }
 
         const pipelineRecords = pipelines

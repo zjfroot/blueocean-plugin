@@ -1,10 +1,11 @@
 import keymirror from 'keymirror';
 import Immutable from 'immutable';
+import { PendingResult } from './Result';
 
 const { Record } = Immutable;
 
 const State = new Record({
-    pipelines: [],
+    pipelines: new PendingResult(),
 });
 
 export const ACTION_TYPES = keymirror({
@@ -14,9 +15,9 @@ export const ACTION_TYPES = keymirror({
 
 const actionHandlers = {
     [ACTION_TYPES.CLEAR_PIPELINES_DATA2](state) {
-        return state.set('pipelines', null);
+        return state.set('pipelines', new PendingResult());
     },
-    [ACTION_TYPES.SET_PIPELINES_DATA2](state, {payload}): State {
+    [ACTION_TYPES.SET_PIPELINES_DATA2](state, { payload }): State {
         return state.set('pipelines', payload);
     },
 };

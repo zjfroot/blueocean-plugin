@@ -2,7 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import fetch from 'isomorphic-fetch';
-import {ACTION_TYPES} from './PipelineStore2';
+import { ACTION_TYPES } from './PipelineStore2';
+import { ErrorResult } from './Result';
 
 const fetchOptions = { credentials: 'same-origin' };
 function checkStatus(response) {
@@ -21,12 +22,17 @@ function parseJSON(response) {
 const actions = {
     clearPipelinesData: () => ({type: ACTION_TYPES.CLEAR_PIPELINES_DATA2}),
 
-    fetchPipelinesIfNeeded(config) {
+    fetchPipelinesIfNeeded(config, flag) {
         return (dispatch, getState) => {
-            const pipelines = getState().adminStore.pipelines;
-            const url = `${config.getAppURLBase()}` +
+            const pipelines = getState().testStore.pipelines;
+            let url = `${config.getAppURLBase()}` +
                 '/rest/organizations/jenkins/pipelines/';
-            if (!pipelines) {
+
+            if (flag === 'error') {
+                url += 'force-error';
+            }
+
+            if (!pipelines || !pipelines.length) {
                 return dispatch(actions.generateData(
                     url,
                     ACTION_TYPES.SET_PIPELINES_DATA2
@@ -45,11 +51,14 @@ const actions = {
                 type: actionType,
                 payload: json,
             }))
-            .catch(() => dispatch({
-                ...optional,
-                payload: null,
-                type: actionType,
-            }));
+            .catch((error) => {
+                const result = new ErrorResult(error);
+                dispatch({
+                    ...optional,
+                    payload: result,
+                    type: actionType,
+                })
+            });
     },
 };
 
@@ -88,7 +97,7 @@ class OrganisationPipelines2 extends Component {
     componentWillMount() {
         if (this.context.config) {
             setTimeout(() => (
-                this.props.fetchPipelinesIfNeeded(this.context.config)
+                this.props.fetchPipelinesIfNeeded(this.context.config, this.props.params.flag)
             ), 2000);
         }
     }

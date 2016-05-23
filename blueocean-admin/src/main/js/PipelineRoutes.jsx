@@ -37,7 +37,7 @@ export default (
             </Route>
         </Route>
         <Route component={OrganisationPipelines2}>
-            <Route path="test" component={Pipelines2} />
+            <Route path="test(/:flag)" component={Pipelines2} />
         </Route>
     </Route>
 );
