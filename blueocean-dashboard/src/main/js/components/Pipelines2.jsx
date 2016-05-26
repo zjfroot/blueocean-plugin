@@ -8,7 +8,7 @@ import {
     from '@jenkins-cd/design-language';
 import { ExtensionPoint } from '@jenkins-cd/js-extensions';
 
-const { array } = PropTypes;
+const { array, bool, number } = PropTypes;
 
 export default class Pipelines2 extends Component {
 
@@ -27,7 +27,7 @@ export default class Pipelines2 extends Component {
             <Page>
                 <PageHeader>
                     <Title>
-                        <h1>Dashboard</h1>
+                        <h1>Dashboard {this.context.progress}</h1>
                         <a
                           target="_blank"
                           className="btn-inverse"
@@ -69,4 +69,5 @@ export default class Pipelines2 extends Component {
 
 Pipelines2.contextTypes = {
     pipelines: array,
+    progress: bool,
 };

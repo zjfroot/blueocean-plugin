@@ -17,15 +17,43 @@ let config; // Holder for various app-wide state
  */
 class App extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            progress: false,
+        };
+    }
+
     getChildContext() {
-        return {config};
+        return {
+            config,
+            progress: this.state.progress,
+        };
+    }
+
+    componentWillMount() {
+        const store = this.context.store;
+        store.subscribe((a, b) => {
+            const storeState = store.getState();
+            const progress = storeState.location.progress > 0;
+            this.setState({
+                progress
+            });
+        });
     }
 
     render() {
+        let progressClasses = 'app-progress';
+
+        if (this.state.progress) {
+            progressClasses += ' active';
+        }
+
         return (
             <div className="Site">
                 <div id="outer">
                     <header className="global-header">
+                        <div className={progressClasses}><div className="app-progress-bar"></div></div>
                         <ExtensionPoint name="jenkins.logo.top"/>
                         <nav>
                             <Link to="/pipelines">Pipelines</Link>
@@ -44,12 +72,17 @@ class App extends Component {
     }
 }
 
+App.contextTypes = {
+    store: PropTypes.object,
+};
+
 App.propTypes = {
     children: PropTypes.node
 };
 
 App.childContextTypes = {
-    config: PropTypes.object
+    config: PropTypes.object,
+    progress: PropTypes.bool,
 };
 
 class NotFound extends Component {

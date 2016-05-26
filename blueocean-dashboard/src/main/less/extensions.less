@@ -142,3 +142,34 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+// TODO: only for POC
+.app-progress {
+  width: 100%;
+  height: 4px;
+  position: absolute;
+
+  &.active {
+    .app-progress-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #fff;
+      animation: indeterminate-bar 2s linear infinite;
+    }
+  }
+}
+
+@keyframes indeterminate-bar {
+  0% {
+    transform: translate(-50%) scaleX(0);
+  }
+  50% {
+    transform: translate(0%) scaleX(0.3);
+  }
+  100% {
+    transform: translate(50%) scaleX(0);
+  }
+}

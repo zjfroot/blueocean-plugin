@@ -43,22 +43,35 @@ const actions = {
     },
 
     generateData(url, actionType, optional) {
-        return (dispatch) => fetch(url, fetchOptions)
-            .then(checkStatus)
-            .then(parseJSON)
-            .then(json => dispatch({
-                ...optional,
-                type: actionType,
-                payload: json,
-            }))
-            .catch((error) => {
-                const result = new ErrorResult(error);
-                dispatch({
-                    ...optional,
-                    payload: result,
-                    type: actionType,
-                });
+
+        return (dispatch) => {
+            dispatch({
+                type: ACTION_TYPES.TICK_PROGRESS,
             });
+
+            fetch(url, fetchOptions)
+                .then((response) => {
+                    dispatch({
+                        type: ACTION_TYPES.UNTICK_PROGRESS,
+                    });
+                    return response;
+                })
+                .then(checkStatus)
+                .then(parseJSON)
+                .then(json => dispatch({
+                    ...optional,
+                    type: actionType,
+                    payload: json,
+                }))
+                .catch((error) => {
+                    const result = new ErrorResult(error);
+                    dispatch({
+                        ...optional,
+                        payload: result,
+                        type: actionType,
+                    });
+                });
+        };
     },
 };
 
@@ -67,6 +80,7 @@ const locationState = (state) => state.location;
 export const previous = createSelector([locationState], store => store.previous);
 export const current = createSelector([locationState], store => store.current);
 export const pipelinesSelector = createSelector([testStore], store => store.pipelines);
+export const requestsSelector = createSelector([testStore], store => store.requestsPending);
 
 
 class OrganisationPipelines2 extends Component {
@@ -96,9 +110,9 @@ class OrganisationPipelines2 extends Component {
 
     componentWillMount() {
         if (this.context.config) {
-            setTimeout(() => (
-                this.props.fetchPipelinesIfNeeded(this.context.config, this.props.params.flag)
-            ), 5000);
+            setTimeout(() => {
+                return this.props.fetchPipelinesIfNeeded(this.context.config, this.props.params.flag)
+            }, 5000);
         }
     }
 
@@ -110,6 +124,7 @@ class OrganisationPipelines2 extends Component {
 OrganisationPipelines2.contextTypes = {
     router: PropTypes.object.isRequired,
     config: PropTypes.object.isRequired,
+    store: PropTypes.object,
 };
 
 OrganisationPipelines2.propTypes = {
@@ -118,6 +133,7 @@ OrganisationPipelines2.propTypes = {
     children: PropTypes.node, // From react-router
     location: PropTypes.object, // From react-router
     pipelines: PropTypes.array,
+    requestsPending: PropTypes.number,
 };
 
 OrganisationPipelines2.childContextTypes = {
@@ -127,6 +143,6 @@ OrganisationPipelines2.childContextTypes = {
     location: PropTypes.object, // From react-router
 };
 
-const selectors = createSelector([pipelinesSelector], (pipelines) => ({ pipelines }));
+const selectors = createSelector([pipelinesSelector, requestsSelector], (pipelines, requestsPending) => ({ pipelines, requestsPending }));
 
 export default connect(selectors, actions)(OrganisationPipelines2);

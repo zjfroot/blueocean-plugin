@@ -3,15 +3,19 @@ import Immutable from 'immutable';
 
 const { Record } = Immutable;
 
+// TODO: maybe put progress somewhere else
 export const routerState = Record({
     current: null,
     previous: null,
+    progress: 0,
 });
 
 export const ACTION_TYPES = keymirror({
     CLEAR_LOCATION_DATA: null,
     SET_LOCATION_CURRENT: null,
     SET_LOCATION_PREVIOUS: null,
+    TICK_PROGRESS: null,
+    UNTICK_PROGRESS: null,
 });
 
 export const actionHandlers = {
@@ -23,6 +27,12 @@ export const actionHandlers = {
     },
     [ACTION_TYPES.SET_LOCATION_PREVIOUS](state, { payload }): routerState {
         return state.set('previous', payload);
+    },
+    [ACTION_TYPES.TICK_PROGRESS](state): routerState {
+        return state.set('progress', state.progress + 1);
+    },
+    [ACTION_TYPES.UNTICK_PROGRESS](state): routerState {
+        return state.set('progress', state.progress - 1);
     },
 };
 

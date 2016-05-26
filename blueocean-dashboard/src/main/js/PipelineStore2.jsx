@@ -11,6 +11,9 @@ const State = new Record({
 export const ACTION_TYPES = keymirror({
     CLEAR_PIPELINES_DATA2: null,
     SET_PIPELINES_DATA2: null,
+    // TODO: find a way to avoid reclaring these as they already exist in blueocean-web
+    TICK_PROGRESS: null,
+    UNTICK_PROGRESS: null,
 });
 
 const actionHandlers = {
